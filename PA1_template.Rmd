@@ -11,7 +11,7 @@ Report
 The following Document is a Report that Respond the Questions associated to the basic anaylisis of certain Data containing: Steps done by an individual in the Dates covered between 2012-10-01 and 2010-11-30 in intervals of 5 minutos of aggregated time.
 
 Previously we need to read the data and then tranform it in order to work properly with 
-an adequated data frame, Thus, We use the function read.csv and data.framne correspondly.
+an adequated data frame, Thus, We use the function read.csv and data.framne correspondly..
 
 # I. Read Data and tranform it
 
