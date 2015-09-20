@@ -13,7 +13,7 @@ The following Document is a Report that Respond the Questions associated to the 
 Previously we need to read the data and then tranform it in order to work properly with 
 an adequated data frame, Thus, We use the function read.csv and data.framne correspondly..
 
-# I. Read Data and tranform it
+# I. Read Data and transform it
 
 ```{r}
 # I. Read Data
@@ -38,15 +38,16 @@ head(actdf)
 ## 1. Calculate the total number of steps taken per day
 ```{r}
 totStepsDays=lapply(actdf,sum)
-barplot(as.numeric(totStepsDays),names.arg=mydays)
+barplot(as.numeric(totStepsDays),names.arg=mydays,main='Mean Total Number of Steps taken per day',col='lightblue')
 ```
 
 ## 2. If you do not understand the difference between a histogram and a barplot, research the difference between them. Make a histogram of the total number of steps taken each day
 
 ```{r}
-hist(as.numeric(totStepsDays),breaks=40,col='lightgreen')  
+hist(as.numeric(totStepsDays),breaks=40,col='lightgreen',main='Histogram of Steps per Day',xlab='TotalStepsPerDays')  
 ```
-###Histogram point to the probability distribution function
+
+###Histogram points to the probability distribution function
 
 ## 3. Calculate and report the mean and median of the total number of steps taken per day
 ## Mean
@@ -60,7 +61,7 @@ barplot(as.numeric(meanStepsDays),names.arg=mydays,main='Mean Total of Steps tak
 
 ```{r}
 medianStepsDays=lapply(actdf,median)
-barplot(as.numeric(medianStepsDays),names.arg=mydays)
+barplot(as.numeric(medianStepsDays),names.arg=mydays,main='Median Total of Steps by Day')
 ```
 
 # III.- What is the average daily activity pattern?
@@ -137,28 +138,30 @@ missValues2
 
 ## 4.- Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-## Histogram
+## BarPlot & Histogram with NA consideration
 
 ```{r}
 totStepsDays2=lapply(actdf,sum)
-barplot(as.numeric(totStepsDays2),names.arg=mydays)
-hist(as.numeric(totStepsDays2),breaks=40,col='lightblue') 
+barplot(as.numeric(totStepsDays2),names.arg=mydays,main='Mean Total Number of Steps taken per day',col='lightblue')
+hist(as.numeric(totStepsDays2),breaks=40,col='lightblue',main='Histogram of Steps per Day',xlab='TotalStepsPerDays') 
 ```
+
 ## Mean
 
 ```{r}
 meanStepsDays2=lapply(actdf,mean)
 barplot(as.numeric(meanStepsDays2),names.arg=mydays,main='Mean Total of Steps taken by Day',col='lightcyan')
 ```
+
 ## Median
 
 ```{r}
 medianStepsDays2=lapply(actdf,median)
-barplot(as.numeric(medianStepsDays2),names.arg=mydays)
+barplot(as.numeric(medianStepsDays2),names.arg=mydays,main='Median Total of Steps by Day')
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?
-## Answ: Yes of course, i will expose that
+## Answ: Yes of course, the differents graphs expose that, Median no zero, different grapg centroid and graph Area below the curve. A different histogram center or media,all these aspects were affected. The result is sensible to the NA elements.
 
 ```{r}
 myday0=substr(colnames(actdf),2,11)
