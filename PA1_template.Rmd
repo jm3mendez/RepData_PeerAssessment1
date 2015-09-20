@@ -5,7 +5,7 @@ date: "Sunday, September 20, 2015"
 output: html_document
 ---
 
-Report
+Report 
 ======
 
 The following Document is a Report that Respond the Questions associated to the basic anaylisis of certain Data containing: Steps done by an individual in the Dates covered between 2012-10-01 and 2010-11-30 in intervals of 5 minutos of aggregated time.
