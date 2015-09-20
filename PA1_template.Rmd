@@ -1,25 +1,193 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: "PA1_template"
+author: "Jose Mendez"
+date: "Sunday, September 20, 2015"
+output: html_document
 ---
 
+Report
+======
 
-## Loading and preprocessing the data
+The following Document is a Report that Respond the Questions associated to the basic anaylisis of certain Data containing: Steps done by an individual in the Dates covered between 2012-10-01 and 2010-11-30 in intervals of 5 minutos of aggregated time.
+
+Previously we need to read the data and then tranform it in order to work properly with 
+an adequated data frame, Thus, We use the function read.csv and data.framne correspondly.
+
+# I. Read Data and tranform it
+
+```{r}
+# I. Read Data
+setwd('/home/jmendez/reproducibleR')
+activity=read.csv('activity.csv',header=TRUE,sep=',',na.string='NA')
+
+# Establish Data Structure  
+myacti=activity[activity$interval==0,]
+mydays=as.character(myacti$date)
+myinterv=as.character(activity$interval[1:288])
+mymat=matrix(data=activity$steps,nrow=288,ncol=61,dimnames=list(myinterv,mydays))
+actdf = data.frame(mymat)
+head(actdf)
+```
+
+###Then we will expose the questions and the answers using explicit text ang plot to support that.
+
+#  II.-  What is mean total number of steps taken per day?
+
+### For this part of the assignment, you can ignore the missing values in the dataset.
+
+## 1. Calculate the total number of steps taken per day
+```{r}
+totStepsDays=lapply(actdf,sum)
+barplot(as.numeric(totStepsDays),names.arg=mydays)
+```
+
+## 2. If you do not understand the difference between a histogram and a barplot, research the difference between them. Make a histogram of the total number of steps taken each day
+
+```{r}
+hist(as.numeric(totStepsDays),breaks=40,col='lightgreen')  
+```
+###Histogram point to the probability distribution function
+
+## 3. Calculate and report the mean and median of the total number of steps taken per day
+## Mean
+
+```{r}
+meanStepsDays=lapply(actdf,mean)
+barplot(as.numeric(meanStepsDays),names.arg=mydays,main='Mean Total of Steps taken by Day',col='lightcyan')
+```
+
+##Median
+
+```{r}
+medianStepsDays=lapply(actdf,median)
+barplot(as.numeric(medianStepsDays),names.arg=mydays)
+```
+
+# III.- What is the average daily activity pattern?
+
+## Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and  the average number of steps taken, averaged across all days (y-axis)
+### Just and exploring data exercise...
+```{r}
+# Just exploring the data...
+plot(rownames(actdf), actdf$X2012.10.10,type='l',col='red',main='Steps by Interval for different days',ylab='Steps', xlab='Intervals')
+points(rownames(actdf), actdf$X2012.10.11,type='l',col='orange')
+points(rownames(actdf), actdf$X2012.10.12,type='l',col='yellow')
+points(rownames(actdf), actdf$X2012.10.13,type='l',col='green')
+points(rownames(actdf), actdf$X2012.10.14,type='l',col='blue')
+points(rownames(actdf), actdf$X2012.10.15,type='l',col='violet')
+points(rownames(actdf), actdf$X2012.10.16,type='l',col='orange')
+points(rownames(actdf), actdf$X2012.10.17,type='l',col='yellow')
+points(rownames(actdf), actdf$X2012.10.18,type='l',col='green')
+points(rownames(actdf), actdf$X2012.10.19,type='l',col='blue')
+points(rownames(actdf), actdf$X2012.10.20,type='l',col='violet')
+#
+meanStepsInterv=apply(actdf,1,function(x)mean(x[!is.na(x)]))
+# correspondly average of steps across all days 
+plot(rownames(actdf), meanStepsInterv,type='l',col='red',main='Mean Steps by Interval across all days',ylab='Steps', xlab='Intervals')
+```
+
+## Which 5-minute interval, on average across all the days in the dataset, 
+```{r}
+#   contains the maximum number of steps?
+max=0; for(i in 1:288) if(meanStepsInterv[i]>max) { max=meanStepsInterv[i];print(paste(i," ",max)) }
+## interval 104   correspond to 206.16 the max
+summary(meanStepsInterv)
+```
+##Answ: Interval 104
+
+#  IV.- Imputing missing values
+
+###Note that there are a number of days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data.
+
+## 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs) Total
+
+```{r}
+missValues=sum(is.na(actdf))
+missValues
+#per row
+apply(actdf,1,function(x)sum(is.na(x)))
+#per col
+sapply(actdf,function(x)sum(is.na(x)))
+```
+
+### That show that the NA correpond to complete days in our cases columns: X2012.10.01, X2012.10.08, x2012.11.01, X2012.11.04, X2012.11.09, X2012.11.10, X2012.11.14, X2012.11.30  (8)
+
+ 
+## 2.- Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+## I used the Rows means because the columns were affected i used meanStepsInterval substituing NA columns
+##  Answ: I will change that columns by the means Row Average:   meanStepsInterv[i]
 
 
 
-## What is mean total number of steps taken per day?
+## 3.- Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
+```{r}
+actdf=transform(actdf,X2012.10.01=meanStepsInterv)
+actdf=transform(actdf,X2012.10.08=meanStepsInterv)
+actdf=transform(actdf,X2012.11.01=meanStepsInterv)
+actdf=transform(actdf,X2012.11.04=meanStepsInterv)
+actdf=transform(actdf,X2012.11.09=meanStepsInterv)
+actdf=transform(actdf,X2012.11.10=meanStepsInterv)
+actdf=transform(actdf,X2012.11.14=meanStepsInterv)
+actdf=transform(actdf,X2012.11.30=meanStepsInterv)
+# Checking not NA, or emplty values
+missValues2=sum(is.na(actdf))
+missValues2
+```
 
+## 4.- Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-## What is the average daily activity pattern?
+## Histogram
 
+```{r}
+totStepsDays2=lapply(actdf,sum)
+barplot(as.numeric(totStepsDays2),names.arg=mydays)
+hist(as.numeric(totStepsDays2),breaks=40,col='lightblue') 
+```
+## Mean
 
+```{r}
+meanStepsDays2=lapply(actdf,mean)
+barplot(as.numeric(meanStepsDays2),names.arg=mydays,main='Mean Total of Steps taken by Day',col='lightcyan')
+```
+## Median
 
-## Imputing missing values
-
-
+```{r}
+medianStepsDays2=lapply(actdf,median)
+barplot(as.numeric(medianStepsDays2),names.arg=mydays)
+```
 
 ## Are there differences in activity patterns between weekdays and weekends?
+## Answ: Yes of course, i will expose that
+
+```{r}
+myday0=substr(colnames(actdf),2,11)
+```
+
+## 1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+
+```{r}
+weekf=weekdays(as.Date(myday0,"%Y.%m.%d"))
+for(i in 1:61) if(weekf[i]=="Sunday"||weekf[i]=="Saturday") weekf[i]='weekend' else weekf[i]='weekday'
+actdf2=rbind(actdf,weekf)
+```
+
+## in my case correspond to a new row
+
+## 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+
+```{r}
+par(mfrow=c(2,1))
+actweekenddf=actdf2[actdf2[289,]=='weekend',]
+actweekdaydf=actdf2[actdf2[289,]=='weekday',]
+actweekendf=apply(actweekenddf,1,function(x)mean(as.numeric(x)))
+plot(actweekendf,type='l')
+actweekdayf=apply(actweekdaydf,1,function(x)mean(as.numeric(x)))
+plot(actweekdayf,type='l')
+par(mfrow=c(1,1))
+```
+
+### Reference:
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
