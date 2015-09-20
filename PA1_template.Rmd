@@ -13,7 +13,7 @@ The following Document is a Report that Respond the Questions associated to the 
 Previously we need to read the data and then tranform it in order to work properly with 
 an adequated data frame, Thus, We use the function read.csv and data.framne correspondly..
 
-# I. Read Data and transform it
+# I. Read Data and Transform it
 
 ```{r}
 # I. Read Data
@@ -31,35 +31,41 @@ head(actdf)
 
 ###Then we will expose the questions and the answers using explicit text ang plot to support that.
 
-#  II.-  What is mean total number of steps taken per day?
+#  II.-  What is mean total number of steps taken per day ?
 
 ### For this part of the assignment, you can ignore the missing values in the dataset.
 
 ## 1. Calculate the total number of steps taken per day
-```{r}
+
+## Total 
+
+```{r totalPlot1}
 totStepsDays=lapply(actdf,sum)
 barplot(as.numeric(totStepsDays),names.arg=mydays,main='Mean Total Number of Steps taken per day',col='lightblue')
 ```
 
 ## 2. If you do not understand the difference between a histogram and a barplot, research the difference between them. Make a histogram of the total number of steps taken each day
 
-```{r}
+## Histogram
+
+```{r histogram1}
 hist(as.numeric(totStepsDays),breaks=40,col='lightgreen',main='Histogram of Steps per Day',xlab='TotalStepsPerDays')  
 ```
 
 ###Histogram points to the probability distribution function
 
 ## 3. Calculate and report the mean and median of the total number of steps taken per day
+
 ## Mean
 
-```{r}
+```{r meanPlot1}
 meanStepsDays=lapply(actdf,mean)
 barplot(as.numeric(meanStepsDays),names.arg=mydays,main='Mean Total of Steps taken by Day',col='lightcyan')
 ```
 
 ##Median
 
-```{r}
+```{r medianPlot1}
 medianStepsDays=lapply(actdf,median)
 barplot(as.numeric(medianStepsDays),names.arg=mydays,main='Median Total of Steps by Day')
 ```
@@ -68,7 +74,7 @@ barplot(as.numeric(medianStepsDays),names.arg=mydays,main='Median Total of Steps
 
 ## Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and  the average number of steps taken, averaged across all days (y-axis)
 ### Just and exploring data exercise...
-```{r}
+```{r exploringPlot}
 # Just exploring the data...
 plot(rownames(actdf), actdf$X2012.10.10,type='l',col='red',main='Steps by Interval for different days',ylab='Steps', xlab='Intervals')
 points(rownames(actdf), actdf$X2012.10.11,type='l',col='orange')
@@ -82,12 +88,18 @@ points(rownames(actdf), actdf$X2012.10.18,type='l',col='green')
 points(rownames(actdf), actdf$X2012.10.19,type='l',col='blue')
 points(rownames(actdf), actdf$X2012.10.20,type='l',col='violet')
 #
+```
+
+##  Means Steps by Interval 
+
+```{r meanStepsIntervals1}
 meanStepsInterv=apply(actdf,1,function(x)mean(x[!is.na(x)]))
-# correspondly average of steps across all days 
+# correspondly Plot the average of steps across all days 
 plot(rownames(actdf), meanStepsInterv,type='l',col='red',main='Mean Steps by Interval across all days',ylab='Steps', xlab='Intervals')
 ```
 
 ## Which 5-minute interval, on average across all the days in the dataset, 
+
 ```{r}
 #   contains the maximum number of steps?
 max=0; for(i in 1:288) if(meanStepsInterv[i]>max) { max=meanStepsInterv[i];print(paste(i," ",max)) }
@@ -140,22 +152,28 @@ missValues2
 
 ## BarPlot & Histogram with NA consideration
 
-```{r}
+## Barplot handling NA
+
+```{r barPlot2}
 totStepsDays2=lapply(actdf,sum)
 barplot(as.numeric(totStepsDays2),names.arg=mydays,main='Mean Total Number of Steps taken per day',col='lightblue')
+```
+## Histogram handling NA
+
+```{r histogram2}
 hist(as.numeric(totStepsDays2),breaks=40,col='lightblue',main='Histogram of Steps per Day',xlab='TotalStepsPerDays') 
 ```
 
-## Mean
+## Mean handling NA
 
-```{r}
+```{r meanBarPlot2}
 meanStepsDays2=lapply(actdf,mean)
 barplot(as.numeric(meanStepsDays2),names.arg=mydays,main='Mean Total of Steps taken by Day',col='lightcyan')
 ```
 
-## Median
+## Median handling NA
 
-```{r}
+```{r medianBarPlot2}
 medianStepsDays2=lapply(actdf,median)
 barplot(as.numeric(medianStepsDays2),names.arg=mydays,main='Median Total of Steps by Day')
 ```
@@ -177,16 +195,18 @@ actdf2=rbind(actdf,weekf)
 
 ## in my case correspond to a new row
 
-## 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+## 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
 
-```{r}
+```{r weekdayEffectPlot}
+actweekenddf=actdf2[,actdf2[289,]=='weekend']
+actweekdaydf=actdf2[,actdf2[289,]=='weekday']
+
+actweekendf=apply(actweekenddf[1:288,],1,function(x)mean(as.numeric(x)))
+actweekdayf=apply(actweekdaydf[1:288,],1,function(x)mean(as.numeric(x)))
+
 par(mfrow=c(2,1))
-actweekenddf=actdf2[actdf2[289,]=='weekend',]
-actweekdaydf=actdf2[actdf2[289,]=='weekday',]
-actweekendf=apply(actweekenddf,1,function(x)mean(as.numeric(x)))
-plot(actweekendf,type='l')
-actweekdayf=apply(actweekdaydf,1,function(x)mean(as.numeric(x)))
-plot(actweekdayf,type='l')
+plot(names(actweekendf),actweekendf,type='l',main='Weekend',xlab='',ylab='Steps',xlim=c(0,2400))
+plot(names(actweekdayf),actweekdayf,type='l',main='Weekday',xlab='Intervals',ylab='Steps',xlim=c(0,2400))
 par(mfrow=c(1,1))
 ```
 
